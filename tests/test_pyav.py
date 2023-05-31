@@ -1,16 +1,19 @@
-import pytest
-from pathlib import Path
-import imageio.v3 as iio
-import numpy as np
 import io
 import warnings
 from contextlib import ExitStack
+from pathlib import Path
+
+import numpy as np
+import pytest
+from conftest import IS_PYPY
+
+import imageio.v3 as iio
 
 av = pytest.importorskip("av", reason="pyAV is not installed.")
 
 from av.video.format import names as video_format_names  # type: ignore # noqa: E402
-from imageio.plugins.pyav import _format_to_dtype  # noqa: E402
 
+from imageio.plugins.pyav import _format_to_dtype  # noqa: E402
 
 IS_AV_10_0_0 = tuple(int(x) for x in av.__version__.split(".")) == (10, 0, 0)
 
@@ -101,16 +104,19 @@ def test_properties(test_images: Path):
         props = plugin.properties()
         assert props.shape == (280, 720, 1280, 3)
         assert props.dtype == np.uint8
+        assert props.n_images == 280
         assert props.is_batch is True
 
         props = plugin.properties(index=4, format="rgb48")
         assert props.shape == (720, 1280, 3)
         assert props.dtype == np.uint16
+        assert props.n_images is None
         assert props.is_batch is False
 
         props = plugin.properties(index=5)
         assert props.shape == (720, 1280, 3)
         assert props.dtype == np.uint8
+        assert props.n_images is None
         assert props.is_batch is False
 
 
@@ -569,6 +575,11 @@ def test_keyframe_intervals(test_images):
     assert np.max(np.diff(key_dist)) <= 5
 
 
+# the maintainer of pyAV hasn't responded to my bug reports in over 4 months so
+# I am disabling this test on pypy to stay sane.
+@pytest.mark.skipif(
+    IS_PYPY, reason="Using the trim filter in pyAV sometimes causes segfaults on Pypy."
+)
 def test_trim_filter(test_images):
     # this is a regression test for:
     # https://github.com/imageio/imageio/issues/951

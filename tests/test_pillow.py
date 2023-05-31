@@ -522,11 +522,13 @@ def test_properties(image_files: Path):
 
     assert properties.shape == (300, 451, 3)
     assert properties.dtype == np.uint8
+    assert properties.n_images is None
 
     # test a ndimage (GIF)
     properties = iio.improps(image_files / "newtonscradle.gif", plugin="pillow")
     assert properties.shape == (36, 150, 200, 3)
     assert properties.dtype == np.uint8
+    assert properties.n_images == 36
     assert properties.is_batch is True
 
     # test a flat gray image
@@ -534,6 +536,14 @@ def test_properties(image_files: Path):
 
     assert properties.shape == (172, 448)
     assert properties.dtype == np.uint8
+    assert properties.n_images is None
+
+    # test an image format that doesn't have n_frames
+    properties = iio.improps(image_files / "rommel.jpg", plugin="pillow")
+    assert properties.n_images is None
+
+    properties = iio.improps(image_files / "rommel.jpg", plugin="pillow", index=...)
+    assert properties.n_images == 1
 
 
 def test_metadata(test_images):
@@ -593,8 +603,8 @@ def test_apng_metadata(tmp_path, test_images):
     assert metadata == metadata2
 
 
-def test_write_format_warning():
-    frames = iio.imread("imageio:chelsea.png")
+def test_write_format_warning(test_images):
+    frames = iio.imread(test_images / "chelsea.png")
     bytes_image = iio.imwrite("<bytes>", frames, extension=".png", plugin="pillow")
 
     with pytest.warns(UserWarning):
@@ -614,9 +624,16 @@ def test_8bit_with_16bit_depth():
     assert np.allclose(img16_read, img16)
 
 
-def test_deprecated_as_gray(test_images):
+def test_deprecated_kwargs(test_images):
     with pytest.raises(TypeError):
         iio.imread(test_images / "chelsea.png", plugin="pillow", as_gray=True)
+
+    with pytest.warns(DeprecationWarning):
+        img = iio.imread(test_images / "chelsea.png", plugin="pillow", pilmode="I")
+        assert img.shape == (300, 451)
+
+    with pytest.warns(DeprecationWarning):
+        iio.imread(test_images / "chelsea.png", plugin="pillow", exifrotate=True)
 
 
 def test_png_batch_fail():
@@ -627,3 +644,40 @@ def test_png_batch_fail():
 
     with pytest.raises(ValueError):
         iio.imwrite("<bytes>", img, extension=".png", plugin="pillow")
+
+
+def test_incremental_gif_write(tmp_path):
+    # this is a regression test for
+    # https://github.com/imageio/imageio/issues/974
+
+    rng = np.random.default_rng()
+
+    with iio.imopen(tmp_path / "test.gif", "w", plugin="pillow") as file:
+        for _ in range(10):
+            img = rng.integers(0, 255, (100, 100, 3), dtype=np.uint8)
+            file.write(img)
+
+    final_gif = iio.imread(tmp_path / "test.gif")
+    assert final_gif.shape == (10, 100, 100, 3)
+
+
+def test_format_change_warning(tmp_path):
+    img = np.full((100, 100, 3), 42, dtype=np.uint8)
+
+    with iio.imopen(tmp_path / "test.gif", "w", plugin="pillow") as file:
+        file.write(img, format="PNG")
+
+        with pytest.warns(UserWarning):
+            file.write(img, format="GIF")
+
+
+def test_writable_output():
+    rng = np.random.default_rng()
+    img = rng.integers(0, 255, (128, 128), dtype=np.uint8)
+    buffer = iio.imwrite("<bytes>", img, extension=".png")
+
+    frame = iio.imread(buffer, plugin="pillow")
+    assert frame.flags["WRITEABLE"]
+
+    frame = iio.imread(buffer, writeable_output=False, plugin="pillow")
+    assert not frame.flags["WRITEABLE"]

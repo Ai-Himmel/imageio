@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--next-version-placeholder-->
 
+## v2.30.0 (2023-05-29)
+### Feature
+
+* SPE plugin: Support new SDT-control metadata ([#989](https://github.com/imageio/imageio/issues/989)) ([`c93536c`](https://github.com/imageio/imageio/commit/c93536ca403863db3270990911ff438b7cf1e047))
+
+### Other
+
+* Remove standard images from built package ([#988](https://github.com/imageio/imageio/issues/988)) ([`6288f19`](https://github.com/imageio/imageio/commit/6288f190103838b95203359eda2bce61afb7a958))
+
+## v2.29.0 (2023-05-23)
+### Feature
+* New SPE v3 plugin (see #963) ([#990](https://github.com/imageio/imageio/issues/990)) ([`6703b2c`](https://github.com/imageio/imageio/commit/6703b2c526e72cf39a2be76038bc47b7527155d5))
+
+## v2.28.1 (2023-05-01)
+### Fix
+* Avoid exception when n_frames is not set by Pillow ([`d03db0f`](https://github.com/imageio/imageio/commit/d03db0f86016fedfe3f225d468609babcc0a81cb))
+* Forward get_reader/get_writer kwargs to read/write ([#979](https://github.com/imageio/imageio/issues/979)) ([`a82037e`](https://github.com/imageio/imageio/commit/a82037ec400197f018f7a167bcce320e9f6a3da0))
+* Allow incremental write in pillow ([#978](https://github.com/imageio/imageio/issues/978)) ([`2ed8fb4`](https://github.com/imageio/imageio/commit/2ed8fb4618c9220f705ccf7e47bed24b01128312))
+* Add `writeable_output=True` to pillow plugin to ensure data is writable by default ([#976](https://github.com/imageio/imageio/issues/976)) ([`6412c98`](https://github.com/imageio/imageio/commit/6412c9808384e19243507eee4eacb1078c405b38))
+
+### Other
+* Refactor invoke in no-internet CI ([#986](https://github.com/imageio/imageio/issues/986)) ([`a945675`](https://github.com/imageio/imageio/commit/a945675d6ba210776ff8188300271f07cab8cfea))
+* Fixed typo in CI script ([#985](https://github.com/imageio/imageio/issues/985)) ([`a2428d3`](https://github.com/imageio/imageio/commit/a2428d3f7f910bc447e9302b7babe60ad7794f44))
+* Fix typo in PyPI link tooltip ([#980](https://github.com/imageio/imageio/issues/980)) ([`d2654ba`](https://github.com/imageio/imageio/commit/d2654bafedff7de792863e99d9f0871d36781672))
+* Generate images in temporary folders ([#977](https://github.com/imageio/imageio/issues/977)) ([`b4fc971`](https://github.com/imageio/imageio/commit/b4fc9713ab28e935425f2d38e8432e22971ec561))
+
+## v2.28.0 (2023-04-24)
+### Feature
+* Expose v3 plugins via v2 API ([#824](https://github.com/imageio/imageio/issues/824)) ([`f3156b7`](https://github.com/imageio/imageio/commit/f3156b777dca535e80826adbb8504a5161110cff))
+
+## v2.27.0 (2023-03-27)
+### Fix
+* Update FreeImage backend to v3.18.0 on Windows ([#960](https://github.com/imageio/imageio/issues/960)) ([`08d3bda`](https://github.com/imageio/imageio/commit/08d3bda3a3c913f172add740d141fdf4a5e2035f))
+
+### Feature
+* Add `n_images` to `ImageProperties` ([#966](https://github.com/imageio/imageio/issues/966)) ([`76d9aed`](https://github.com/imageio/imageio/commit/76d9aed22db5f10e3924f453e320b5ad7d33387a))
+
+## v2.26.1 (2023-03-20)
+### Fix
+* Consistently apply color palettes by default ([#955](https://github.com/imageio/imageio/issues/955)) ([`938de2d`](https://github.com/imageio/imageio/commit/938de2dd17707440f76963c98cc52d28f70961f4))
+* Allow ffmpeg filters to terminate iter ([#954](https://github.com/imageio/imageio/issues/954)) ([`a463899`](https://github.com/imageio/imageio/commit/a46389977bc2ee7b32e25a310d97ebabb6dfcaec))
+* Handle unknown video duration in pyav metadata ([#937](https://github.com/imageio/imageio/issues/937)) ([`06a1c0d`](https://github.com/imageio/imageio/commit/06a1c0d454985afa7c66152c16867943c6796bd8))
+
+### Other
+* Remove pypy 3.7 testing and improve CI/CD scripts ([#964](https://github.com/imageio/imageio/issues/964)) ([`b439803`](https://github.com/imageio/imageio/commit/b439803d187fac99a28cbbba632c60c43970dcd3))
+* Several doc improvements ([#959](https://github.com/imageio/imageio/issues/959)) ([`ecb6773`](https://github.com/imageio/imageio/commit/ecb677377beb98dbeeaac7c39b9b32f88443eb53))
+* Add GH Sponsors link ([`0e13f64`](https://github.com/imageio/imageio/commit/0e13f64c5a4b156a58932e733e7b8c3609a872b1))
+
 ## v2.26.0 (2023-02-27)
 ### Feature
 * Collection of small improvements to pyav ([#939](https://github.com/imageio/imageio/issues/939)) ([`b0dc210`](https://github.com/imageio/imageio/commit/b0dc21074d77894d01ce50ab2a525f214b1e265d))
